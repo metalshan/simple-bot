@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/metalshan/simple-bot/issues"
   },
-  "homepage": "https://github.com/metalshan/simple-bot#readme"
+  "homepage": "https://github.com/metalshan/simple-bot#readme",
+  "dependencies": {
+    "yargs": "^8.0.1"
+  }
 }
