@@ -9,7 +9,14 @@ class Worker{
         return new Promise((resolve, reject)=>{
             request(url, function (error, response, body) {
                 if(error){
-                    reject(url);
+                    resolve({
+                        status: false,
+                        data: {
+                            url,
+                            title: "Failed to scrape"
+                        },
+                        urls : []
+                    });
                 } else{
                     const dom = new JSDOM(body);
                     
