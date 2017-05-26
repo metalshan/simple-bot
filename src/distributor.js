@@ -68,6 +68,7 @@ class Distributor{
         // urls.forEach(u=>console.log(u));
 
         this.pushToTaskQueue(urls);
+        this.statusCheck();
         this.distribute();
         //saving crawled data
         keeper.save(data);
