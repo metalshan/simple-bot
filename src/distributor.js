@@ -23,7 +23,7 @@ class Distributor{
 
     //This will initiate the process
     initiate(url){
-        console.log(`Kicking off with base url ${url}`);
+        console.log(`Kicking off with base url ${url} \n`);
         
         //create workers
         for(let i=0; i<maxConcurrent; i++){
@@ -45,7 +45,7 @@ class Distributor{
             if(status===IDLE && this.taskQueue.length>0){
                 let url = this.taskQueue.shift();
                 let workerPromise = worker.work(url);
-                workerPromise.then(this.handleNewUrls.bind(this, worker));
+                workerPromise.then(this.handleWorkerResponse.bind(this, worker));
                 this.workers.set(worker, BUSY);
             }
         }
@@ -62,7 +62,7 @@ class Distributor{
         });
     }
 
-    handleNewUrls(worker, {data, urls}){
+    handleWorkerResponse(worker, {data, urls}){
         this.workers.set(worker, IDLE); //setting the worker as idle again
 
         // console.log(`Newly found urls from ${data.url} are...`);
