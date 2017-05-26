@@ -13,6 +13,8 @@ class Keeper {
     save({url, title}){
         let dataToWrite = `\n${url},${title},`;
         this.writeStream.write(dataToWrite);
+        console.log(`\nSaving ${url}`);
+        console.log(`Title = ${title}`);
     }
 
     //to flush the previous data

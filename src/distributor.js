@@ -2,7 +2,6 @@
 
 const config = require("../config.json");
 const maxConcurrent = config.numberOfConcurrentRequests;
-//const tastQueueLimit = 100; //to avoid the chances of memory overflow
 const IDLE = "idle";
 const BUSY = "busy";
 
@@ -14,16 +13,15 @@ class Distributor{
         this.refresh();
     }
     
-    //to flush everything
+    //to flush everything of the distributor component
     refresh(){
         this.workers = new Map();
-        this.lastDistributedWorkerIndex = -1;
         this.taskQueue = [];
     }
 
     //This will initiate the process
     initiate(url){
-        console.log(`Kicking off with base url ${url} \n`);
+        console.log(`\nKicking off with base url ${url} \n`);
         
         //create workers
         for(let i=0; i<maxConcurrent; i++){
@@ -37,10 +35,14 @@ class Distributor{
     }
 
     pushToTaskQueue(urls){
+        this.statusCheck(); //status printing
         this.taskQueue.push(...urls);
+        this.statusCheck(); //status printing      
     }
 
     distribute(){
+        this.statusCheck(); //status printing
+        
         for (let [worker, status] of this.workers) {
             if(status===IDLE && this.taskQueue.length>0){
                 let url = this.taskQueue.shift();
@@ -49,13 +51,14 @@ class Distributor{
                 this.workers.set(worker, BUSY);
             }
         }
-        //status check
-        this.statusCheck();
+
+        this.statusCheck(); //status printing
     }
 
+    //this prints the status of the queue and workers
     statusCheck(){
-        console.log(`TaskQueue length is ${this.taskQueue.length} !!`);
-        let index = 0;
+        console.log(`\nTaskQueue length is ${this.taskQueue.length} !!`);
+        let index = 0; //taking index separately, cause Map.prototype.forEach doesn't provide index by itself
         this.workers.forEach((status)=>{
             console.log(`Worker ${index} is ${status}`);
             index++;
@@ -65,12 +68,10 @@ class Distributor{
     handleWorkerResponse(worker, {data, urls}){
         this.workers.set(worker, IDLE); //setting the worker as idle again
 
-        // console.log(`Newly found urls from ${data.url} are...`);
-        // urls.forEach(u=>console.log(u));
-
+        //push & distribute jobs
         this.pushToTaskQueue(urls);
-        this.statusCheck();
         this.distribute();
+
         //saving crawled data
         keeper.save(data);
     }
