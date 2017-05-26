@@ -11,23 +11,15 @@ class Keeper {
     //this will append the new data to the file
     save({url, title}){
         let dataToWrite = `\n${url},${title},`;
-        fs.appendFile(outputFilePath, dataToWrite, "utf8", (err) => {
-            if (err) {
-                console.log(`ERR!! Some error occured while saving ${dataToWrite}`);
-            }
-        });
+        this.writeStream.write(dataToWrite);
     }
 
     //to flush the previous data
     flush(){
         let header = "Url,Title,";
-        fs.writeFile(outputFilePath, header, "utf8", (err) => {
-            if (err) {
-                console.log("ERR!! Some error occured while saving header");
-                console.log("Please restart again.");
-                process.exit(-1);
-            }
-        });
+        var wstream = fs.createWriteStream(outputFilePath);
+        wstream.write(header);
+        this.writeStream = wstream;
     }
 }
 
