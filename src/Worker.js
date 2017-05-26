@@ -3,11 +3,11 @@
 let request = require("request");
 let {JSDOM} = require("jsdom");
 let urlUtil = require("./utils/url");
-
+let BPromise = require("bluebird");
 class Worker{
     //this function does the scraping
     work(url){
-        return new Promise(resolve=>{
+        return new BPromise(resolve=>{
             request(url, (error, response, body) => {
                 if(error){
                     resolve(this.failureResponse(url));
