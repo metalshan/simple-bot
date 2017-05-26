@@ -26,7 +26,6 @@ class Worker{
                             urls.push(anchorUrl);
                         }
                     });
-                    console.log(urls)
                     //resolving with appropriate data
                     resolve({
                         data:{

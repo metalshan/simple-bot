@@ -48,20 +48,29 @@ class Distributor{
                 this.workers.set(worker, BUSY);
             }
         }
+        //status check
+        this.statusCheck();
+    }
+
+    statusCheck(){
+        console.log(`TaskQueue length is ${this.taskQueue.length} !!`);
+        let index = 0;
+        this.workers.forEach((status)=>{
+            console.log(`Worker ${index} is ${status}`);
+            index++;
+        });
     }
 
     handleNewUrls(worker, {data, urls}){
         this.workers.set(worker, IDLE); //setting the worker as idle again
 
-        console.log(`Newly found urls from ${data.url} are...`);
-        urls.forEach(u=>console.log(u));
+        // console.log(`Newly found urls from ${data.url} are...`);
+        // urls.forEach(u=>console.log(u));
 
         this.pushToTaskQueue(urls);
         this.distribute();
         //saving crawled data
         keeper.save(data);
-
-        this.distribute();
     }
 }
 
