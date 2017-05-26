@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/metalshan/simple-bot#readme",
   "dependencies": {
+    "jsdom": "^11.0.0",
     "yargs": "^8.0.1"
   }
 }
