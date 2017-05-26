@@ -1,10 +1,16 @@
 "use strict";
 
 class Worker{
-    work(){
+    work(url){
         return new Promise((resolve)=>{
             setTimeout(()=>{
-                resolve(["url1", "url2"]);
+                resolve({
+                    data:{
+                        url: url,
+                        title: "I am a title"
+                    },
+                    urls: ["url1", "url2"]
+                });
             },2000);
         });
     }
