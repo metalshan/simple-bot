@@ -1,7 +1,12 @@
 "use strict";
 
 const maxConcurrent = 5;
+//const tastQueueLimit = 100; //to avoid the chances of memory overflow
+const IDLE = "idle";
+const BUSY = "busy";
+
 let Worker = require("./Worker");
+let keeper = require("./keeper");
 
 class Distributor{
     constructor(){
@@ -10,8 +15,9 @@ class Distributor{
     
     //to flush everything
     refresh(){
-        this.workers = [];
+        this.workers = new Map();
         this.lastDistributedWorkerIndex = -1;
+        this.taskQueue = [];
     }
 
     //This will initiate the process
@@ -19,32 +25,43 @@ class Distributor{
         console.log(`Kicking off with base url ${url}`);
         
         //create workers
-        this.workers = [];
         for(let i=0; i<maxConcurrent; i++){
-            this.workers.push(new Worker());
+            let worker = new Worker();
+            this.workers.set(worker, IDLE);
         }
 
         //start distributing
-        this.distribute([url]);
+        this.pushToTaskQueue([url]);
+        this.distribute();
     }
 
-    distribute(urls){
-        urls.forEach(url=>{
-            //simple round robin to get the accurate worker
-            this.lastDistributedWorkerIndex++;
-            if(this.lastDistributedWorkerIndex>=maxConcurrent){
-                this.lastDistributedWorkerIndex = 0;
+    pushToTaskQueue(urls){
+        this.taskQueue.push(...urls);
+    }
+
+    distribute(){
+        for (let [worker, status] of this.workers) {
+            if(status===IDLE && this.taskQueue.length>0){
+                let url = this.taskQueue.shift();
+                let workerPromise = worker.work(url);
+                workerPromise.then(this.handleNewUrls.bind(this, worker));
+                this.workers.set(worker, BUSY);
             }
-            let workerToPerformThisTask = this.workers[this.lastDistributedWorkerIndex];
-
-            let workerPromise = workerToPerformThisTask.work(url);
-            workerPromise.then(this.handleNewUrls.bind(this));
-        });
+        }
     }
 
-    handleNewUrls(urls){
-        console.log("Newly found urls are...");
+    handleNewUrls(worker, {data, urls}){
+        this.workers.set(worker, IDLE); //setting the worker as idle again
+
+        console.log(`Newly found urls from ${data.url} are...`);
         urls.forEach(u=>console.log(u));
+
+        this.pushToTaskQueue(urls);
+        this.distribute();
+        //saving crawled data
+        keeper.save(data);
+
+        this.distribute();
     }
 }
 
