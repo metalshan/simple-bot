@@ -3,7 +3,8 @@
 let args = require("yargs").argv;
 let distributor = require("./src/distributor");
 let urlUtils = require("./src/utils/url");
-const defaultFirstPage = "https://medium.com/";
+const config = require("./config.json");
+const defaultFirstPage = config.defaultKickoffUrl;
 
 let firstPageToCrawl = args.page || defaultFirstPage;
 

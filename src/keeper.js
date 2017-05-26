@@ -1,7 +1,8 @@
 "use strict";
 
 let fs = require("fs");
-const outputFilePath = "./output.csv";
+const config = require("../config.json");
+const outputFilePath = config.outputCSV;
 
 class Keeper {
     constructor(){

@@ -1,6 +1,7 @@
 "use strict";
 
-const maxConcurrent = 5;
+const config = require("../config.json");
+const maxConcurrent = config.numberOfConcurrentRequests;
 //const tastQueueLimit = 100; //to avoid the chances of memory overflow
 const IDLE = "idle";
 const BUSY = "busy";

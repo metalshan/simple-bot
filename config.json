@@ -1,0 +1,5 @@
+{
+    "outputCSV": "./output.csv",
+    "numberOfConcurrentRequests": 5,
+    "defaultKickoffUrl": "https://medium.com/"
+}
