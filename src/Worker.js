@@ -1,35 +1,34 @@
 "use strict";
 
-let request = require("request");
+let fetch = require("request-promise");
 let {JSDOM} = require("jsdom");
 let urlUtil = require("./utils/url");
 
 class Worker{
     //this function does the scraping
-    work(url){
-        return new Promise(resolve=>{
-            request(url, (error, response, body) => {
-                if(error){
-                    resolve(this.failureResponse(url));
-                } else{
-                    const dom = new JSDOM(body);                    
-                    //find title
-                    let title = this.findTitleFromDOM(dom);
-                    //findLinks 
-                    let urls = this.findRelativeUrlsFromDOM(dom, url);
+    async work(url){
+        console.log("i am working");
+        let body = "";
+        try{
+            body = await fetch(url);
+        } catch(error){
+            return this.failureResponse(url);
+        }
+        const dom = new JSDOM(body);                
+        //find title
+        let title = this.findTitleFromDOM(dom);
+        //findLinks 
+        let urls = this.findRelativeUrlsFromDOM(dom, url);
 
-                    //resolving with appropriate data
-                    resolve({
-                        status: true,
-                        data:{
-                            url,
-                            title
-                        },
-                        urls
-                    });
-                }
-            });
-        });
+        //resolving with appropriate data
+        return {
+            status: true,
+            data:{
+                url,
+                title
+            },
+            urls
+        };
     }
 
     //get the title from the dom element
