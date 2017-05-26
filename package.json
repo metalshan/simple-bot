@@ -1,0 +1,19 @@
+{
+  "name": "simple-bot",
+  "version": "0.0.0",
+  "description": "a simple bot to recurssive call",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metalshan/simple-bot.git"
+  },
+  "author": "Paul Shan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/metalshan/simple-bot/issues"
+  },
+  "homepage": "https://github.com/metalshan/simple-bot#readme"
+}
